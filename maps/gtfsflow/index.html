@@ -17,90 +17,82 @@
 </head>
 <body>
   <div id="map"></div>
-    <script>
-        const {DeckGL, TripsLayer, FlyToInterpolator} = deck;
-        let map;
+  <script>
+    const {DeckGL, TripsLayer, FlyToInterpolator} = deck;
+    let map;
 
-        const DATA_URL = "./trains.json";
-        const LOOP_LENGTH = 750;
-        let initialViewState = {
-          zoom: 4,
-          longitude: 18.6435,
-          latitude: 63.1282,
-          pitch: 0
-        };
+    // The viewstates:
+    let initialViewState = {
+      zoom: 4,
+      longitude: 18.6435,
+      latitude: 63.1282,
+      pitch: 0
+    };
 
-      function initMap() {
+    const viewState2 = () => {
+      initialViewState = {
+        ...initialViewState,
+        bearing: 0,
+        transitionDuration: 20000,
+        zoom: 4.5,
+        latitude: 60,
+        pitch: 40,
+        transitionInterpolator: new FlyToInterpolator(['bearing']),
+        onTransitionEnd: viewState3
+      };
+      map.setProps({initialViewState});
+    }
+    const viewState3 = () => {
+        initialViewState = {
+        ...initialViewState,
+        bearing: 0,
+        longitude: 16,
+        transitionDuration: 30000,
+        zoom:4.8,
+        transitionInterpolator: new FlyToInterpolator(['bearing']),
+      };
+      map.setProps({initialViewState});
+    }      
 
-        const overlay = new deck.MapboxOverlay({});
-        map = new DeckGL(
-          {
-            //mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-            mapStyle: 'https://raw.githubusercontent.com/CartoDB/basemap-styles/master/mapboxgl/dark-matter-nolabels.json',
-            initialViewState: initialViewState,
-            controller: true,
-            onLoad: viewState2
-          });
+    map = new DeckGL({
+      //mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+      mapStyle: 'https://raw.githubusercontent.com/CartoDB/basemap-styles/master/mapboxgl/dark-matter-nolabels.json',
+      initialViewState: initialViewState,
+      controller: true,
+      onLoad: viewState2
+    });
 
-        let currentTime = 0;
-        
-        const animate = () => {
-        currentTime = (currentTime + 0.3) % LOOP_LENGTH;  
-          map.setProps({
-            layers: [
-              new TripsLayer({
-                id: "trips",
-                data: DATA_URL,
-                getPath: (d) => d.path,
-                getTimestamps: (d) => d.timestamps,
-                getColor: [191, 255, 0],
-                opacity: 1,
-                widthMinPixels: 2,
-                trailLength: 60,
-                currentTime,
-                shadowEnabled: false,
-                currentTime,
-              })
-            ]
-          });
+    const DATA_URL = "./trains.json";
+    const LOOP_LENGTH = 3000;
 
-          window.requestAnimationFrame(animate);
-        };
-        window.requestAnimationFrame(animate);
-      }
+    let currentTime = 0;
+    
+    const animate = () => {
+      currentTime = (currentTime + 0.3) % LOOP_LENGTH;  
+      map.setProps({
+        layers: [
+          new TripsLayer(
+            {
+            id: "trips",
+            data: DATA_URL,
+            getPath: (d) => d.path,
+            getTimestamps: (d) => d.timestamps,
+            getColor: [191, 255, 0],
+            opacity: 1,
+            widthMinPixels: 2,
+            trailLength: 60,
+            currentTime,
+            shadowEnabled: false,
+            currentTime,
+          })
+        ]
+      });
 
-
-  initMap();
-
-function viewState2() {
-  initialViewState = {
-    ...initialViewState,
-    bearing: 0,
-    transitionDuration: 20000,
-    zoom: 4.5,
-    latitude: 60,
-    pitch: 40,
-    transitionInterpolator: new FlyToInterpolator(['bearing']),
-    onTransitionEnd: viewState3
-  };
-  map.setProps({initialViewState});
-}
-function viewState3() {
-  initialViewState = {
-    ...initialViewState,
-    bearing: 0,
-    longitude: 16,
-    transitionDuration: 30000,
-    zoom:5.1,
-
-    transitionInterpolator: new FlyToInterpolator(['bearing']),
-
-  };
-  map.setProps({initialViewState});
-}
-
-
-    </script>
+      window.requestAnimationFrame(animate);
+    };
+    animate();
+      
+</script>
 
 </body>
 </html>
