@@ -19,101 +19,79 @@
   <div id="map"></div>
     <script>
         const {DeckGL, TripsLayer, FlyToInterpolator} = deck;
-let map;
+        let map;
 
-const DATA_URL = "./gtfs.json";
-const LOOP_LENGTH = 1900;
-let initialViewState = {
-  zoom: 4.5,
-  longitude: 16.6435,
-  latitude: 58.1282,
-  pitch: 0,
-  bearing: 30,
-};
+        const DATA_URL = "./trains.json";
+        const LOOP_LENGTH = 40000;
+        let initialViewState = {
+          zoom: 4,
+          longitude: 18.6435,
+          latitude: 63.1282,
+          pitch: 0
+        };
 
-function initMap() {
+      function initMap() {
 
-  const overlay = new deck.MapboxOverlay({});
-  map = new DeckGL({
+        const overlay = new deck.MapboxOverlay({});
+        map = new DeckGL(
+          {
             //mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
             mapStyle: 'https://raw.githubusercontent.com/CartoDB/basemap-styles/master/mapboxgl/dark-matter-nolabels.json',
             initialViewState: initialViewState,
             controller: true,
-            onLoad: rotateCamera
+            onLoad: viewState2
+          });
 
-  });
+        let currentTime = 0;
+        
+        const animate = () => {
+        currentTime = (currentTime + 0.3) % LOOP_LENGTH;  
+          map.setProps({
+            layers: [
+              new TripsLayer({
+                id: "trips",
+                data: DATA_URL,
+                getPath: (d) => d.path,
+                getTimestamps: (d) => d.timestamps,
+                getColor: [191, 255, 0],
+                opacity: 1,
+                widthMinPixels: 2,
+                trailLength: 60,
+                currentTime,
+                shadowEnabled: false,
+                currentTime,
+              })
+            ]
+          });
 
-  let currentTime = 400;
-
-
-
-  const animate = () => {
-    currentTime = (currentTime + 0.4) % LOOP_LENGTH;
-    console.log(currentTime);
-    map.setProps({
-      layers: [
-        new TripsLayer({
-          id: "trips",
-          data: DATA_URL,
-          getPath: (d) => d.path,
-          getTimestamps: (d) => d.timestamps,
-          getColor: [191, 255, 0],
-          //getColor: (d) => d.color,
-          opacity: 1,
-          widthMinPixels: 2,
-          trailLength: 60,
-          currentTime,
-          shadowEnabled: false,
-          currentTime,
-        })
-      ]
-    });
-
-    window.requestAnimationFrame(animate);
-
-  };
-  //animate()
-  setTimeout(() => {
-    window.requestAnimationFrame(animate);
-}, 1000);
-
-  //overlay.setMap(map);
-}
+          window.requestAnimationFrame(animate);
+        };
+        window.requestAnimationFrame(animate);
+      }
 
 
   initMap();
-/*
-map.setProps({
-  viewState: {
-              zoom: 4,
-                longitude: 18.6435,
-                latitude: 63.1282,
-                pitch: 100,
-            },
-            transitionInterpolator: new FlyToInterpolator({speed: 2}),
-            transitionDuration: 'auto'
-});*/
 
-function rotateCamera() {
+function viewState2() {
   initialViewState = {
     ...initialViewState,
     bearing: 0,
-    transitionDuration: 10000,
-    zoom:5.3,
-    pitch: 90,
-    latitude: 60.1282,
+    transitionDuration: 20000,
+    zoom: 4.5,
+    latitude: 60,
+    pitch: 40,
     transitionInterpolator: new FlyToInterpolator(['bearing']),
-    onTransitionEnd: rotateCamera2
+    onTransitionEnd: viewState3
   };
   map.setProps({initialViewState});
 }
-function rotateCamera2() {
+function viewState3() {
   initialViewState = {
     ...initialViewState,
     bearing: 0,
-    longitude: 14,
+    longitude: 16,
     transitionDuration: 30000,
-    zoom:5.5,
+    zoom:5.1,
 
     transitionInterpolator: new FlyToInterpolator(['bearing']),
 
