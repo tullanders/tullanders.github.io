@@ -69,7 +69,7 @@
   let deltaTime = 0;
 
     const animate = (timestamp) => {
-      currentTime = (currentTime + 1) % LOOP_LENGTH;
+      currentTime = (currentTime + 0.6) % LOOP_LENGTH;
       map.setProps({
         layers: [
           new TripsLayer(
