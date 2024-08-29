@@ -65,10 +65,11 @@
     const DATA_URL = "./trains.json";
     const LOOP_LENGTH = 3000;
 
-    let currentTime = 0;
-    
-    const animate = () => {
-      currentTime = (currentTime + 0.3) % LOOP_LENGTH;  
+  let currentTime = 0;
+  let deltaTime = 0;
+
+    const animate = (timestamp) => {
+      currentTime = (currentTime + 1) % LOOP_LENGTH;
       map.setProps({
         layers: [
           new TripsLayer(
@@ -87,10 +88,9 @@
           })
         ]
       });
-
       window.requestAnimationFrame(animate);
     };
-    animate();
+    window.requestAnimationFrame(animate);
       
 </script>
 
