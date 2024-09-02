@@ -1,0 +1,133 @@
+[
+    {
+        "type": "Feature",
+        "properties": {
+            "OBJECTID": 12967,
+            "SiteID": 26,
+            "SensorDate": "2023-10-15T00:00:00",
+            "SensorID": 2,
+            "ConfidenceID": 1,
+            "Main_Damage_Site_Class": 2,
+
+            "SensorDate_2": "2023-11-07T00:00:00",
+            "SensorID_2": 8,
+            "ConfidenceID_2": 1,
+            "Main_Damage_Site_Class_2": 2,
+            "Damage_Status_2": 0,
+
+            "SensorDate_3": "2023-11-26T00:00:00",
+            "SensorID_3": 8,
+            "ConfidenceID_3": 1,
+            "Main_Damage_Site_Class_3": 2,
+            "Damage_Status_3": 0,
+
+            "SensorDate_4": "2024-01-06T00:00:00",
+            "SensorID_4": 64,
+            "ConfidenceID_4": 1,
+            "Main_Damage_Site_Class_4": 2,
+            "Damage_Status_4": 0,
+
+            "SensorDate_5": "2024-02-29T00:00:00",
+            "SensorID_5": 8,
+            "ConfidenceID_5": 1,
+            "Main_Damage_Site_Class_5": 2,
+            "Damage_Status_5": 0,
+
+            "SensorDate_6": "2024-04-01T00:00:00",
+            "SensorID_6": 8,
+            "ConfidenceID_6": 1,
+            "Main_Damage_Site_Class_6": 2,
+            "Damage_Status_6": 0,
+
+            "SensorDate_7": "2024-05-03T00:00:00",
+            "SensorID_7": 8,
+            "ConfidenceID_7": 1,
+            "Main_Damage_Site_Class_7": 2,
+            "Damage_Status_7": 0,
+
+            "SensorDate_8": "2024-07-06T00:00:00",
+            "SensorID_8": 8,
+            "ConfidenceID_8": 1,
+            "Main_Damage_Site_Class_8": 2,
+            "Damage_Status_8": 0,
+            "Grouped_Damage_Classes": 1,
+            "FieldValidation": 0,
+            "Notes": null,
+            "Territory": "Gaza Strip",
+            "Governorate": "North Gaza",
+            "Municipality": "Jabalya",
+            "Neighborhood": "Ar Rawdah",
+            "EventCode": "CE20231007PSE"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                34.471636299000068,
+                31.525244383000086,
+                0.0
+            ]
+        }
+    },
+    {
+        "type": "Feature",
+"properties": {
+    "OBJECTID": 12968,
+    "SiteID": 26,
+    "SensorDate": "2023-10-15T00:00:00",
+    "SensorID": 2,
+    "ConfidenceID": 1,
+    "Main_Damage_Site_Class": 2,
+    "SensorDate_2": "2023-11-07T00:00:00",
+    "SensorID_2": 8,
+    "ConfidenceID_2": 1,
+    "Main_Damage_Site_Class_2": 2,
+    "Damage_Status_2": 0,
+    "SensorDate_3": "2023-11-26T00:00:00",
+    "SensorID_3": 8,
+    "ConfidenceID_3": 1,
+    "Main_Damage_Site_Class_3": 2,
+    "Damage_Status_3": 0,
+    "SensorDate_4": "2024-01-06T00:00:00",
+    "SensorID_4": 64,
+    "ConfidenceID_4": 1,
+    "Main_Damage_Site_Class_4": 2,
+    "Damage_Status_4": 0,
+    "SensorDate_5": "2024-02-29T00:00:00",
+    "SensorID_5": 8,
+    "ConfidenceID_5": 1,
+    "Main_Damage_Site_Class_5": 2,
+    "Damage_Status_5": 0,
+    "SensorDate_6": "2024-04-01T00:00:00",
+    "SensorID_6": 8,
+    "ConfidenceID_6": 1,
+    "Main_Damage_Site_Class_6": 2,
+    "Damage_Status_6": 0,
+    "SensorDate_7": "2024-05-03T00:00:00",
+    "SensorID_7": 8,
+    "ConfidenceID_7": 1,
+    "Main_Damage_Site_Class_7": 2,
+    "Damage_Status_7": 0,
+    "SensorDate_8": "2024-07-06T00:00:00",
+    "SensorID_8": 8,
+    "ConfidenceID_8": 1,
+    "Main_Damage_Site_Class_8": 2,
+    "Damage_Status_8": 0,
+    "Grouped_Damage_Classes": 1,
+    "FieldValidation": 0,
+    "Notes": null,
+    "Territory": "Gaza Strip",
+    "Governorate": "North Gaza",
+    "Municipality": "Jabalya",
+    "Neighborhood": "Ar Rawdah",
+    "EventCode": "CE20231007PSE"
+},
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                34.471780780000074,
+                31.525165005000076,
+                0.0
+            ]
+        }
+    }
+]
