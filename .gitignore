@@ -1,2 +1,6 @@
 ./maps/gaza/damage_sites_gaza_20240706.geojson
 maps/gaza/damage_sites_gaza_20240706.geojson
+.vscode/
+node_modules/
+dist/
+.DS_Store
