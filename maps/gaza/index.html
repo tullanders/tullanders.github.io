@@ -31,34 +31,19 @@
         font-size: small;
         z-index: 100;
       }
-
-      #slider {
-        position: absolute;
-        top: 10px;
-        left: 200px;
-        width: 320px;
-        padding: 10px;
-        background-color: rgba(256, 256, 256, 0.8);
-        font-family:Arial, Helvetica, sans-serif;
-        font-size: small;
-        z-index: 100;        
+      #toolbar ul {
+        list-style-type: none;
+        padding: 0;
       }
-      datalist {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      writing-mode: vertical-lr;
-      width: 300px;
-    }
+      #toolbar ul li {
+        margin-bottom: 5px;
+      }
+      #toolbar label {
+        margin-left: 5px;
+      }
 
-    option {
-      padding: 0;
-    }
 
-    input[type="range"] {
-      width: 300px;
-      margin: 0;
-    }
+
     </style>
 <script type="text/javascript">
   (function(c,l,a,r,i,t,y){
@@ -71,22 +56,21 @@
 <body>
   <div id="toolbar">
     <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
-    <label for="ck_hospitals">Show hospitals</label><br>
+    <label for="ck_hospitals">Show hospitals</label><br/><br/>
+    <ul>
+      <li><input id="SensorDate0" type="radio" name="SensorDate" value="0" checked><label for="SensorDate0">2023-10-15</label></li>
+      <li><input id="SensorDate1" type="radio" name="SensorDate" value="1" checked><label for="SensorDate1">2023-11-07</label></li>
+      <li><input id="SensorDate2" type="radio" name="SensorDate" value="2" checked><label for="SensorDate2">2023-11-26</label></li>
+      <li><input id="SensorDate3" type="radio" name="SensorDate" value="3" checked><label for="SensorDate3">2024-01-07</label></li>
+      <li><input id="SensorDate4" type="radio" name="SensorDate" value="4" checked><label for="SensorDate4">2024-02-29</label></li>
+      <li><input id="SensorDate5" type="radio" name="SensorDate" value="5" checked><label for="SensorDate5">2024-03-31</label></li>
+      <li><input id="SensorDate6" type="radio" name="SensorDate" value="6" checked><label for="SensorDate6">2024-05-03</label></li>
+      <li><input id="SensorDate7" type="radio" name="SensorDate" value="7" checked><label for="SensorDate7">2024-07-06</label></li>
+      <li><input id="SensorDate8" type="radio" name="SensorDate" value="8" checked><label for="SensorDate8">2024-09-03</label></li>
+    </ul>
+        
   </div>
-  <div id="slider">
-    <input id="SensorDate" type="range" min="0" max="8" step="1" value="8" list="markers" />
-    <datalist id="markers">
-      <option value="0" label="2023-10-15"></option>
-      <option value="1" label="2023-11-07"></option>
-      <option value="2" label="2023-11-26"></option>
-      <option value="3" label="2024-01-07"></option>
-      <option value="4" label="2024-02-29"></option>
-      <option value="5" label="2024-03-31"></option>
-      <option value="6" label="2024-05-03"></option>
-      <option value="7" label="2024-07-06"></option>
-      <option value="8" label="2024-09-03"></option>
-    </datalist>
-  </div>
+
   <div id="map"></div>
   <script>
 
@@ -124,7 +108,7 @@
         if (overlay) {
           map.removeControl(overlay);
         }
-        
+
         const layer = new deck.ScatterplotLayer({
           id: 'scatterplot-layer',
           data: responseJSON,
@@ -136,7 +120,11 @@
           radiusMaxPixels: 10,
           radiusScale: 8,
           // Using appropriate fields for coordinates from the dataset
-          getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
+          getPosition: (d) => {
+            if (d.Main_Damage_Site_Class[index]) {
+              return [d.coordinates[0], d.coordinates[1]];
+            }
+          },
           getFillColor: (d) => {
             if (d.Main_Damage_Site_Class[index] > 5) {;
               return [255, 0, 0, 255];
@@ -154,7 +142,7 @@
               return [255, 200, 0, 255];
             }
             else {
-              return [255, 255, 50, 255];
+              return;
             }
           }
         });
@@ -178,14 +166,19 @@
           map.setLayoutProperty('hospital-symbol', 'visibility', 'none');
         }
       });
-      const rangeInput = document.getElementById('SensorDate');
+      
 
 
       // Add event listener for 'input' event
-      rangeInput.addEventListener('input', function () {
-          // Update the displayed value based on the range slider's current value
-          createDeckLayer(this.value);
+      const radios = document.querySelectorAll('input[name="SensorDate"]');
+      radios.forEach(radio => {
+      radio.addEventListener('change', function () {
+          if (radio.checked) {
+              // Update the displayed selected color when a radio button is selected
+              createDeckLayer(radio.value);
+          }
       });
+});
 
   });    
       
