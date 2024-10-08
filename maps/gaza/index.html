@@ -29,8 +29,36 @@
         background-color: rgba(256, 256, 256, 0.8);
         font-family:Arial, Helvetica, sans-serif;
         font-size: small;
-        z-index: 1;
+        z-index: 100;
       }
+
+      #slider {
+        position: absolute;
+        top: 10px;
+        left: 200px;
+        width: 320px;
+        padding: 10px;
+        background-color: rgba(256, 256, 256, 0.8);
+        font-family:Arial, Helvetica, sans-serif;
+        font-size: small;
+        z-index: 100;        
+      }
+      datalist {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      writing-mode: vertical-lr;
+      width: 300px;
+    }
+
+    option {
+      padding: 0;
+    }
+
+    input[type="range"] {
+      width: 300px;
+      margin: 0;
+    }
     </style>
 <script type="text/javascript">
   (function(c,l,a,r,i,t,y){
@@ -44,6 +72,20 @@
   <div id="toolbar">
     <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
     <label for="ck_hospitals">Show hospitals</label><br>
+  </div>
+  <div id="slider">
+    <input id="SensorDate" type="range" min="0" max="8" step="1" value="8" list="markers" />
+    <datalist id="markers">
+      <option value="0" label="2023-10-15"></option>
+      <option value="1" label="2023-11-07"></option>
+      <option value="2" label="2023-11-26"></option>
+      <option value="3" label="2024-01-07"></option>
+      <option value="4" label="2024-02-29"></option>
+      <option value="5" label="2024-03-31"></option>
+      <option value="6" label="2024-05-03"></option>
+      <option value="7" label="2024-07-06"></option>
+      <option value="8" label="2024-09-03"></option>
+    </datalist>
   </div>
   <div id="map"></div>
   <script>
@@ -71,53 +113,60 @@
     map.on('load', async () => {
       let image = await map.loadImage('hospital.png');
       map.addImage('hospital', image.data);
-      
 
-      // Fetch the data
       const response = await fetch('damage_gaza.json');
       const responseJSON = await response.json();
 
-      const layer = new deck.ScatterplotLayer({
-        id: 'scatterplot-layer',
-        data: responseJSON,
-        pickable: true,
-        opacity: 1,
-        stroked: false,
-        filled: true,
-        radiusMinPixels: 1,
-        radiusMaxPixels: 10,
-        radiusScale: 8,
-        // Using appropriate fields for coordinates from the dataset
-        getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
-        getFillColor: (d) => {
-          if (d.Main_Damage_Site_Class[8] > 5) {;
-            return [255, 0, 0, 255];
-          }
-          else if (d.Main_Damage_Site_Class[8] == 4) {
-            return [255, 50, 0, 255];
-          }
-          else if (d.Main_Damage_Site_Class[8] == 3) {
-            return [255, 100, 0, 255];
-          }
-          else if (d.Main_Damage_Site_Class[8] == 2) {
-            return [255, 150, 0, 255];
-          }
-          else if (d.Main_Damage_Site_Class[8] == 1) {
-            return [255, 200, 0, 255];
-          }
-          else {
-            return [255, 255, 50, 255];
-          }
+      let overlay;
+
+      const createDeckLayer = async (index) => {
+        // if overlay already exists, remove it
+        if (overlay) {
+          map.removeControl(overlay);
         }
-      });
+        
+        const layer = new deck.ScatterplotLayer({
+          id: 'scatterplot-layer',
+          data: responseJSON,
+          pickable: true,
+          opacity: 1,
+          stroked: false,
+          filled: true,
+          radiusMinPixels: 1,
+          radiusMaxPixels: 10,
+          radiusScale: 8,
+          // Using appropriate fields for coordinates from the dataset
+          getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
+          getFillColor: (d) => {
+            if (d.Main_Damage_Site_Class[index] > 5) {;
+              return [255, 0, 0, 255];
+            }
+            else if (d.Main_Damage_Site_Class[index] == 4) {
+              return [255, 50, 0, 255];
+            }
+            else if (d.Main_Damage_Site_Class[index] == 3) {
+              return [255, 100, 0, 255];
+            }
+            else if (d.Main_Damage_Site_Class[index] == 2) {
+              return [255, 150, 0, 255];
+            }
+            else if (d.Main_Damage_Site_Class[index] == 1) {
+              return [255, 200, 0, 255];
+            }
+            else {
+              return [255, 255, 50, 255];
+            }
+          }
+        });
           
+        // Create the overlay
+        overlay = new deck.MapboxOverlay({
+            layers: [layer],
+        });
+        map.addControl(overlay);
+      }
 
-      // Create the overlay
-      const overlay = new deck.MapboxOverlay({
-          layers: [layer],
-      });
-      map.addControl(overlay);
-
+      createDeckLayer(8);
       
 
       // Toogle layers
@@ -128,6 +177,14 @@
         } else {
           map.setLayoutProperty('hospital-symbol', 'visibility', 'none');
         }
+      });
+      const rangeInput = document.getElementById('SensorDate');
+
+
+      // Add event listener for 'input' event
+      rangeInput.addEventListener('input', function () {
+          // Update the displayed value based on the range slider's current value
+          createDeckLayer(this.value);
       });
 
   });    
