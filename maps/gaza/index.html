@@ -63,6 +63,10 @@
     .addControl(new maplibregl.NavigationControl(), 'top-right')
     .addControl(new maplibregl.ScaleControl(), 'bottom-right');
 
+    // function for initializing deck layer
+    
+
+
     // Add the overlay as a control
     map.on('load', async () => {
       let image = await map.loadImage('hospital.png');
@@ -81,7 +85,8 @@
         stroked: false,
         filled: true,
         radiusMinPixels: 1,
-        radiusMaxPixels: 100,
+        radiusMaxPixels: 10,
+        radiusScale: 8,
         // Using appropriate fields for coordinates from the dataset
         getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
         getFillColor: (d) => {
@@ -103,24 +108,16 @@
           else {
             return [255, 255, 50, 255];
           }
-        },
-        onClick: (info) => {
-            console.log(info);
-            const {coordinate, object} = info;
-            const description = `<p>${object.nom_carto || 'Unknown'}</p>`;
-
-            new maplibregl.Popup()
-                .setLngLat(coordinate)
-                .setHTML(description)
-                .addTo(map);
-        },
+        }
       });
+          
 
       // Create the overlay
       const overlay = new deck.MapboxOverlay({
           layers: [layer],
       });
       map.addControl(overlay);
+
       
 
       // Toogle layers
