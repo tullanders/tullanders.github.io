@@ -4,107 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Damage sites in Gaza 2024-07-06 - Anders Bergkvist</title>
-    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
-    <link href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@^4.7.1/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@^4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/deck.gl@8.9.33/dist.min.js"></script>
+
     <style>
-        body {
-          width: 100vw;
-          height: 100vh;
-          margin: 0;
-        }
+      html,body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #toolbar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+        background-color: rgba(256, 256, 256, 0.8);
+        font-family:Arial, Helvetica, sans-serif;
+        font-size: small;
+        z-index: 1;
+      }
     </style>
 </head>
 <body>
+  <div id="toolbar">
+    <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
+    <label for="ck_hospitals">Show hospitals</label><br>
+  </div>
   <div id="map"></div>
   <script>
-    const {DeckGL, GeoJsonLayer, FlyToInterpolator} = deck;
-    let map;
 
-    // The viewstates:
-    let initialViewState = {
-      zoom: 11,      
-      longitude: 34.4667,
-      latitude: 31.5,
-      pitch: 0
-    };
+    
 
-    const viewState2 = () => {
-      initialViewState = {
-        ...initialViewState,
-        bearing: 0,
-        transitionDuration: 20000,
-        zoom: 4.5,
-        latitude: 60,
-        pitch: 40,
-        transitionInterpolator: new FlyToInterpolator(['bearing']),
-        onTransitionEnd: viewState3
-      };
-      map.setProps({initialViewState});
-    }
-    const viewState3 = () => {
-        initialViewState = {
-        ...initialViewState,
-        bearing: 0,
-        longitude: 16,
-        transitionDuration: 30000,
-        zoom:4.8,
-        transitionInterpolator: new FlyToInterpolator(['bearing']),
-      };
-      map.setProps({initialViewState});
-    }      
 
-    const layer = new GeoJsonLayer({
-      id: 'GeoJsonLayer',
-      data: './damage_gaza.json',
+        
+    var map = new maplibregl.Map({
+      container: 'map', // container id
+      style: '/maps/maps/dark_matter_gaza.json',
+      pitch: 60,
+      center: [34.3333, 31.4167], // starting position [lng, lat] for Gaza Strip
+      
+      zoom: 10.5 // starting zoom
+    })
+    .addControl(new maplibregl.NavigationControl(), 'top-right')
+    .addControl(new maplibregl.ScaleControl(), 'bottom-right');
 
-      stroked: false,
-      filled: true,
-      pointType: 'circle+text',
-      pickable: true,
-      //getFillColor: [160, 160, 180, 200],
-      getFillColor: f => {
-        if (f.properties.Main_Damage_Site_Class[7] == 5) {
-          return [255, 0, 0, 255];
+    // Add the overlay as a control
+    map.on('load', async () => {
+      let image = await map.loadImage('hospital.png');
+      map.addImage('hospital', image.data);
+      
+
+      // Fetch the data
+      const response = await fetch('damage_gaza.json');
+      const responseJSON = await response.json();
+
+      const layer = new deck.ScatterplotLayer({
+        id: 'scatterplot-layer',
+        data: responseJSON,
+        pickable: true,
+        opacity: 1,
+        stroked: false,
+        filled: true,
+        radiusMinPixels: 1,
+        radiusMaxPixels: 100,
+        // Using appropriate fields for coordinates from the dataset
+        getPosition: (d) => [d.coordinates[0], d.coordinates[1]],
+        getFillColor: (d) => {
+          if (d.Main_Damage_Site_Class[8] > 5) {;
+            return [255, 0, 0, 255];
+          }
+          else if (d.Main_Damage_Site_Class[8] == 4) {
+            return [255, 50, 0, 255];
+          }
+          else if (d.Main_Damage_Site_Class[8] == 3) {
+            return [255, 100, 0, 255];
+          }
+          else if (d.Main_Damage_Site_Class[8] == 2) {
+            return [255, 150, 0, 255];
+          }
+          else if (d.Main_Damage_Site_Class[8] == 1) {
+            return [255, 200, 0, 255];
+          }
+          else {
+            return [255, 255, 50, 255];
+          }
+        },
+        onClick: (info) => {
+            console.log(info);
+            const {coordinate, object} = info;
+            const description = `<p>${object.nom_carto || 'Unknown'}</p>`;
+
+            new maplibregl.Popup()
+                .setLngLat(coordinate)
+                .setHTML(description)
+                .addTo(map);
+        },
+      });
+
+      // Create the overlay
+      const overlay = new deck.MapboxOverlay({
+          layers: [layer],
+      });
+      map.addControl(overlay);
+      
+
+      // Toogle layers
+      document.getElementById('ck_hospitals').addEventListener('change', function() {
+        if (this.checked) {
+          map.setLayoutProperty('hospital-symbol', 'visibility', 'visible');
+
+        } else {
+          map.setLayoutProperty('hospital-symbol', 'visibility', 'none');
         }
-        else if (f.properties.Main_Damage_Site_Class[7] == 4) {
-          return [255, 50, 0, 255];
-        }
-        else if (f.properties.Main_Damage_Site_Class[7] == 3) {
-          return [255, 100, 0, 255];
-        }
-        else if (f.properties.Main_Damage_Site_Class[7] == 2) {
-          return [255, 150, 0, 255];
-        }
-        else if (f.properties.Main_Damage_Site_Class[7] == 1) {
-          return [255, 200, 0, 255];
-        }
-        else {
-          return [255, 255, 50, 255];
-        }
-      },
-      getLineColor: f => {
-        const hex = f.properties.color;
-        // convert to RGB
-        return hex ? hex.match(/[0-9a-f]{2}/g).map(x => parseInt(x, 16)) : [0, 0, 0];
-      },
-      getLineWidth: 20,
-      getPointRadius: 4,
-      getText: f => f.properties.name,
-      getTextSize: 12
-    });    
+      });
 
-    map = new DeckGL({
-      //mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-      mapStyle: 'https://raw.githubusercontent.com/CartoDB/basemap-styles/master/mapboxgl/dark-matter-nolabels.json',
-      initialViewState: initialViewState,
-      controller: true,
-      layers: [layer],
-      getTooltip: ({object}) => object && object.properties.Main_Damage_Site_Class[7] + ' ' + object.properties.Municipality,
-      //onLoad: viewState2
-    });
-
-
+  });    
       
 </script>
 
