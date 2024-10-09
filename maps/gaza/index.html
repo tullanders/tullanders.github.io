@@ -23,23 +23,17 @@
       }
       #toolbar {
         position: absolute;
+        line-height: 10px;
         top: 10px;
         left: 10px;
-        padding: 10px;
+        padding: 5px;
         background-color: rgba(256, 256, 256, 0.8);
         font-family:Arial, Helvetica, sans-serif;
         font-size: small;
         z-index: 100;
       }
-      #toolbar ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      #toolbar ul li {
-        margin-bottom: 5px;
-      }
       #toolbar label {
-        margin-left: 5px;
+        margin-left: 2px;
       }
 
 
@@ -55,19 +49,21 @@
 </head>
 <body>
   <div id="toolbar">
+    Select sensor date:
+    <select id="sel_SensorDate">
+      <option value="0">2023-10-15</option>
+      <option value="1">2023-11-07</option>
+      <option value="2">2023-11-26</option>
+      <option value="3">2024-01-07</option>
+      <option value="4">2024-02-29</option>
+      <option value="5">2024-03-31</option>
+      <option value="6">2024-05-03</option>
+      <option value="7">2024-07-06</option>
+      <option value="8" selected>2024-09-03</option>
+    </select>
     <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
     <label for="ck_hospitals">Show hospitals</label><br/><br/>
-    <ul>
-      <li><input id="SensorDate0" type="radio" name="SensorDate" value="0" checked><label for="SensorDate0">2023-10-15</label></li>
-      <li><input id="SensorDate1" type="radio" name="SensorDate" value="1" checked><label for="SensorDate1">2023-11-07</label></li>
-      <li><input id="SensorDate2" type="radio" name="SensorDate" value="2" checked><label for="SensorDate2">2023-11-26</label></li>
-      <li><input id="SensorDate3" type="radio" name="SensorDate" value="3" checked><label for="SensorDate3">2024-01-07</label></li>
-      <li><input id="SensorDate4" type="radio" name="SensorDate" value="4" checked><label for="SensorDate4">2024-02-29</label></li>
-      <li><input id="SensorDate5" type="radio" name="SensorDate" value="5" checked><label for="SensorDate5">2024-03-31</label></li>
-      <li><input id="SensorDate6" type="radio" name="SensorDate" value="6" checked><label for="SensorDate6">2024-05-03</label></li>
-      <li><input id="SensorDate7" type="radio" name="SensorDate" value="7" checked><label for="SensorDate7">2024-07-06</label></li>
-      <li><input id="SensorDate8" type="radio" name="SensorDate" value="8" checked><label for="SensorDate8">2024-09-03</label></li>
-    </ul>
+
         
   </div>
 
@@ -170,16 +166,10 @@
 
 
       // Add event listener for 'input' event
-      const radios = document.querySelectorAll('input[name="SensorDate"]');
-      radios.forEach(radio => {
-      radio.addEventListener('change', function () {
-          if (radio.checked) {
-              // Update the displayed selected color when a radio button is selected
-              createDeckLayer(radio.value);
-          }
+      const select = document.getElementById('sel_SensorDate');
+      select.addEventListener('change', function() {
+        createDeckLayer(select.value);
       });
-});
-
   });    
       
 </script>
