@@ -35,6 +35,9 @@
       #toolbar label {
         margin-left: 2px;
       }
+      #toolbar div {
+       float: left;
+      }
 
 
 
@@ -49,21 +52,24 @@
 </head>
 <body>
   <div id="toolbar">
-    Select sensor date:
-    <select id="sel_SensorDate">
-      <option value="0">2023-10-15</option>
-      <option value="1">2023-11-07</option>
-      <option value="2">2023-11-26</option>
-      <option value="3">2024-01-07</option>
-      <option value="4">2024-02-29</option>
-      <option value="5">2024-03-31</option>
-      <option value="6">2024-05-03</option>
-      <option value="7">2024-07-06</option>
-      <option value="8" selected>2024-09-03</option>
-    </select>
-    <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
-    <label for="ck_hospitals">Show hospitals</label><br/><br/>
-
+    <div class=""
+      <label></label>Select sensor date:</label>
+      <select id="sel_SensorDate">
+        <option value="0">2023-10-15</option>
+        <option value="1">2023-11-07</option>
+        <option value="2">2023-11-26</option>
+        <option value="3">2024-01-07</option>
+        <option value="4">2024-02-29</option>
+        <option value="5">2024-03-31</option>
+        <option value="6">2024-05-03</option>
+        <option value="7">2024-07-06</option>
+        <option value="8" selected>2024-09-03</option>
+      </select>
+    </div>
+    <div class="">
+      <input type="checkbox" id="ck_hospitals" name="ck_hospitals">
+      <label for="ck_hospitals">Show hospitals</label>
+    </div>
         
   </div>
 
